@@ -355,14 +355,14 @@ WriteProgress "*** RunOnce-Schluessel hinzufuegen zum Restaurieren von WinRE nac
 WriteNewline
 # ShouldPrecess not neccessary because New-ItemProperty handles it internally?
 #if ($PSCmdlet.ShouldProcess($env:COMPUTERNAME, "Add RunOnce registry key"))
+#{
+# this is only done, to have the modification in the shadow copy that is about to be created
+New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" -Name "enablewinre" -Value "reagentc /enable" -Force -ErrorAction SilentlyContinue | Out-Null
+if (-not $?)
 {
-    # this is only done, to have the modification in the shadow copy that is about to be created
-    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" -Name "enablewinre" -Value "reagentc /enable" -Force -ErrorAction SilentlyContinue | Out-Null
-    if (-not $?)
-    {
-        throw "Fehler beim Hinzufügen des RunOnce-Schlüssels"
-    }
+    throw "Fehler beim Hinzufügen des RunOnce-Schlüssels"
 }
+#}
 
 
 WriteProgress "*** Windows RE auf Windows-Partition verschieben (RE ausschalten) ***"
